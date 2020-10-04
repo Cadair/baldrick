@@ -1,13 +1,12 @@
-import os
-import netrc
 import datetime
+import netrc
+import os
 from collections import defaultdict
 
 import dateutil.parser
-
 import jwt
-
 import requests
+from loguru import logger
 
 TEN_MIN = datetime.timedelta(minutes=9)
 ONE_MIN = datetime.timedelta(minutes=1)
@@ -90,6 +89,8 @@ def get_installation_token(installation):
         resp = req.json()
 
         if not req.ok:
+            logger.trace(req)
+            logger.debug(resp)
             if 'message' in resp:
                 raise Exception(resp['message'])
             else:
