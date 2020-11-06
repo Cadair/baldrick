@@ -1,5 +1,7 @@
 import os
 
+from loguru import logger
+
 from baldrick import github  # noqa
 
 __all__ = ['create_app', '__version__']
@@ -10,7 +12,6 @@ GLOBAL_TOML = ''
 
 
 def _init_global_toml():
-    import os
     global GLOBAL_TOML
 
     GLOBAL_TOML = os.path.join('.', 'pyproject.toml')
@@ -57,6 +58,9 @@ def create_app(name, register_blueprints=True):
         conf = load(GLOBAL_TOML, tool=name)
         if conf:
             app.conf = conf
+            logger.trace(f"Loaded the following app config: {conf}")
+    else:
+        logger.trace("No global app config found to load.")
 
     app.integration_id = int(os.environ['GITHUB_APP_INTEGRATION_ID'])
     app.private_key = os.environ['GITHUB_APP_PRIVATE_KEY']
